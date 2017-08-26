@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using PetClinic.Helpers;
 
@@ -38,8 +39,13 @@ namespace PetClinic.Extensions
         public static void SendKeys(this IWebDriver driver, ElementLocator locator, string text)
         {
             if (!string.IsNullOrEmpty(text))
-                new WebDriverWait(driver, TimeSpan.FromSeconds(Wait)).Until(
-                    ExpectedConditions.ElementToBeClickable(driver.FindElement(locator.ToBy(locator)))).SendKeys(text);
+            {
+                var el = new WebDriverWait(driver, TimeSpan.FromSeconds(Wait)).Until(
+                    ExpectedConditions.ElementToBeClickable(driver.FindElement(locator.ToBy(locator))));
+                //ugly hack becaue of unknown error: cannot focus element in chromedriver
+                //TODO replace by sendKeys when bug is fixed
+                new Actions(driver).MoveToElement(el).Click().SendKeys(text).Build().Perform();
+            }
         }
 
         public static void Click(this IWebDriver driver, ElementLocator locator)
