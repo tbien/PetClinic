@@ -10,7 +10,7 @@ namespace PetClinic.PageObjects
 
         protected ProjectPageObject(IWebDriver driver)
         {
-            this.Driver = driver;
+            Driver = driver;
         }
     }
 }

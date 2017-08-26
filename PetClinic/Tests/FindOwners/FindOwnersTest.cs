@@ -20,9 +20,9 @@ namespace PetClinic.Tests.FindOwners
         [Test]
         public void AddOwnerTest()
         {
-            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
+            _owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
 
-            var ownerDetails = AddOwner(this._owner);
+            var ownerDetails = AddOwner();
 
             Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerDetails.Name);
             Assert.AreEqual(_owner.Address, ownerDetails.Address);
@@ -33,11 +33,11 @@ namespace PetClinic.Tests.FindOwners
         [Test]
         public void SearchOwnerTest()
         {
-            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
+            _owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
 
-            var ownerInfromationPage = AddOwner(_owner)
+            var ownerInfromationPage = AddOwner()
                 .GoToFindOwnerPage()
-                .SearchForOwner<OwnerInformationPage>(_owner.LastName, driver => new OwnerInformationPage(driver));
+                .SearchForOwner(_owner.LastName, driver => new OwnerInformationPage(driver));
 
             Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerInfromationPage.Name);
             Assert.AreEqual(_owner.Address, ownerInfromationPage.Address);
@@ -48,25 +48,25 @@ namespace PetClinic.Tests.FindOwners
         [Test]
         public void SearchForDublicatesTest()
         {
-            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
+            _owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
             var expectedOwners = new List<Owner>();
             var ownerInfromationPage = new OwnerInformationPage(Driver);
 
             for (var i = 0; i < 2; i++)
             {
-                ownerInfromationPage = AddOwner(this._owner);
+                ownerInfromationPage = AddOwner();
                 expectedOwners.Add(_owner);
             }
 
            var actualOwners = ownerInfromationPage
                 .GoToFindOwnerPage()
-                .SearchForOwner<OwnersPage>(_owner.LastName, driver => new OwnersPage(driver))
+                .SearchForOwner(_owner.LastName, driver => new OwnersPage(driver))
                 .Owners;
 
             expectedOwners.ShouldBeEquivalentTo(actualOwners);
         }
 
-        private OwnerInformationPage AddOwner(Owner owner)
+        private OwnerInformationPage AddOwner()
         {
             return new FindOwnerPage(Driver)
                 .Open()

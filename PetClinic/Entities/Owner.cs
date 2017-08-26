@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace PetClinic.Entities
+﻿namespace PetClinic.Entities
 {
     public class Owner
     {
