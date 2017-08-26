@@ -77,6 +77,7 @@
     <Compile Include="PageObjects\FindOwnerPage.cs" />
     <Compile Include="PageObjects\HomePage.cs" />
     <Compile Include="PageObjects\OwnerInformationPage.cs" />
+    <Compile Include="PageObjects\OwnersPage.cs" />
     <Compile Include="PageObjects\ProjectPageObject.cs" />
     <Compile Include="Tests\FindOwners\FindOwnersTest.cs" />
     <Compile Include="Tests\ProjectTestBase.cs" />

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -34,6 +36,13 @@ namespace PetClinic.Extensions
         {
             return new WebDriverWait(driver, TimeSpan.FromSeconds(Wait)).Until(
                 ExpectedConditions.ElementToBeClickable(driver.FindElement(locator.ToBy(locator))));
+        }
+
+        public static ReadOnlyCollection<IWebElement> FindElements(this IWebDriver driver, ElementLocator locator, params object[] parameters)
+        {
+            locator = locator.Format(parameters);
+            new WebDriverWait(driver, TimeSpan.FromSeconds(Wait)).Until(drv => driver.FindElements(locator.ToBy(locator)).Count > 0);
+            return driver.FindElements(locator.ToBy(locator));
         }
 
         public static void SendKeys(this IWebDriver driver, ElementLocator locator, string text)

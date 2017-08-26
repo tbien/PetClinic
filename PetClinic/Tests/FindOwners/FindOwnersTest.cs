@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using PetClinic.Entities;
 using PetClinic.PageObjects;
@@ -36,7 +37,7 @@ namespace PetClinic.Tests.FindOwners
         {
             var ownerDetails = new FindOwnerPage(Driver)
                 .Open()
-                .SearchForOwner(_owner.LastName);
+                .SearchForOwner<OwnerInformationPage>(_owner.LastName, driver => new OwnerInformationPage(driver));
 
             Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerDetails.Name);
             Assert.AreEqual(_owner.Address, ownerDetails.Address);
@@ -47,6 +48,8 @@ namespace PetClinic.Tests.FindOwners
         [Test, Order(3)]
         public void SearchForDublicatesTest()
         {
+            var expectedOwners = new List<Owner>();
+
             var ownerDetails = new FindOwnerPage(Driver).Open();
 
             for (var i = 0; i < 2; i++)
@@ -58,9 +61,11 @@ namespace PetClinic.Tests.FindOwners
                     .EnterOwnerDetails(_owner)
                     .ClickAddOwnerButton()
                     .GoToFindOwnerPage();
+
+                expectedOwners.Add(_owner);
             }
 
-            ownerDetails.SearchForOwner(_owner.LastName);
+            var actualOwners = ownerDetails.SearchForOwner<OwnersPage>(_owner.LastName, driver => new OwnersPage(driver)).Owners;
         }
     }
 }

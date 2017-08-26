@@ -5,10 +5,9 @@ using PetClinic.Helpers;
 
 namespace PetClinic.PageObjects
 {
-    public class AddOwnerPage
+    public class AddOwnerPage : ProjectPageObject
     {
-        private readonly IWebDriver _driver;
-        
+       
         //locators
         private readonly ElementLocator _addOwnerButton = new ElementLocator(Locator.CssSelector, "button[type='submit']");
         private readonly ElementLocator _ownerAddress = new ElementLocator(Locator.Id, "address");
@@ -17,25 +16,24 @@ namespace PetClinic.PageObjects
         private readonly ElementLocator _ownerName = new ElementLocator(Locator.Id, "firstName");
         private readonly ElementLocator _ownerTelephone = new ElementLocator(Locator.Id, "telephone");
 
-        public AddOwnerPage(IWebDriver driver)
+        public AddOwnerPage(IWebDriver driver) : base(driver)
         {
-            this._driver = driver;
         }
 
         public AddOwnerPage EnterOwnerDetails(Owner owner)
         {
-            this._driver.SendKeys(_ownerName, owner.FirstName);
-            this._driver.SendKeys(_ownerLastName, owner.LastName);
-            this._driver.SendKeys(_ownerAddress, owner.Address);
-            this._driver.SendKeys(_ownerCity, owner.City);
-            this._driver.SendKeys(_ownerTelephone, owner.Telephone);
+            Driver.SendKeys(_ownerName, owner.FirstName);
+            Driver.SendKeys(_ownerLastName, owner.LastName);
+            Driver.SendKeys(_ownerAddress, owner.Address);
+            Driver.SendKeys(_ownerCity, owner.City);
+            Driver.SendKeys(_ownerTelephone, owner.Telephone);
             return this;
         }
 
         public OwnerInformationPage ClickAddOwnerButton()
         {
-            this._driver.Click(_addOwnerButton);
-            return new OwnerInformationPage(this._driver);
+            Driver.Click(_addOwnerButton);
+            return new OwnerInformationPage(Driver);
         }
     }
 }

@@ -6,24 +6,22 @@ namespace PetClinic.PageObjects
 {
     public class HomePage : ProjectPageObject
     {
-        private readonly IWebDriver _driver;
+        public HomePage(IWebDriver driver) : base(driver)
+        {
+        }
 
         //locators
         private readonly ElementLocator _welcomePagePicture = new ElementLocator(Locator.CssSelector, "img[src='/petclinic/resources/images/pets.png']");
         private readonly ElementLocator _welcomeSign = new ElementLocator(Locator.CssSelector, "h2");
 
-        public HomePage(IWebDriver driver)
-        {
-            this._driver = driver;
-        }
 
-        public bool HomePagePicture => this._driver.IsElementDisplayed(_welcomePagePicture);
+        public bool HomePagePicture => Driver.IsElementDisplayed(_welcomePagePicture);
 
-        public string WelcomeSign => this._driver.GetText(_welcomeSign);
+        public string WelcomeSign => Driver.GetText(_welcomeSign);
 
         public HomePage Open()
         {
-            this._driver.Navigate().GoToUrl(Url);
+            Driver.Navigate().GoToUrl(Url);
             return this;
         }
     }
