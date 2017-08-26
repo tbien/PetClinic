@@ -11,7 +11,7 @@ namespace PetClinic.PageObjects
     {
         //locators
         private readonly ElementLocator owners = new ElementLocator(Locator.CssSelector, "table.table tr:nth-of-type({0})>td");
-        private readonly ElementLocator numberOfRows = new ElementLocator(Locator.CssSelector, "table.table tr");
+        private readonly ElementLocator numberOfRows = new ElementLocator(Locator.CssSelector, "table.table>tbody>tr");
 
         public OwnersPage(IWebDriver driver) : base(driver)
         {
@@ -24,13 +24,19 @@ namespace PetClinic.PageObjects
                 var ownerList = new List<Owner>();
 
                 var count = Driver.FindElements(numberOfRows).Count;
-                for (int i = 0; i < count; i++)
+                for (var i = 1; i <= count; i++)
                 {
                     var list = Driver.FindElements(owners, i).Select(x => x.Text).ToList();
-                    ownerList.Add(new Owner { Name = $"{list[0]}"});
+                    ownerList.Add(new Owner
+                    {
+                        FirstName = list[0].Split()[0],
+                        LastName = list[0].Split()[1],
+                        Address = list[1],
+                        City = list[2],
+                        Telephone = list[3]
+                    });
                 }
-
-                return new List<Owner>();
+                return ownerList;
             }
         }
     }

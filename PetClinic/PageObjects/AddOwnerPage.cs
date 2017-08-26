@@ -20,18 +20,13 @@ namespace PetClinic.PageObjects
         {
         }
 
-        public AddOwnerPage EnterOwnerDetails(Owner owner)
+        public OwnerInformationPage EnterOwnerDetails(Owner owner)
         {
             Driver.SendKeys(_ownerName, owner.FirstName);
             Driver.SendKeys(_ownerLastName, owner.LastName);
             Driver.SendKeys(_ownerAddress, owner.Address);
             Driver.SendKeys(_ownerCity, owner.City);
             Driver.SendKeys(_ownerTelephone, owner.Telephone);
-            return this;
-        }
-
-        public OwnerInformationPage ClickAddOwnerButton()
-        {
             Driver.Click(_addOwnerButton);
             return new OwnerInformationPage(Driver);
         }

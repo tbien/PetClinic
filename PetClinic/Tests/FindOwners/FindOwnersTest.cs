@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 using PetClinic.Entities;
 using PetClinic.PageObjects;
@@ -11,20 +12,17 @@ namespace PetClinic.Tests.FindOwners
         private readonly Owner _owner = new Owner
         {
             FirstName = "Tomasz",
-            LastName = Guid.NewGuid().ToString().Substring(0,6),
             City = "Wroclaw",
             Address = "Strzegomska",
             Telephone = "1123"
         };
 
-        [Test, Order(1)]
+        [Test]
         public void AddOwnerTest()
         {
-            var ownerDetails = new FindOwnerPage(Driver)
-                .Open()
-                .ClickAddOwnerButton()
-                .EnterOwnerDetails(_owner)
-                .ClickAddOwnerButton();
+            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
+
+            var ownerDetails = AddOwner(this._owner);
 
             Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerDetails.Name);
             Assert.AreEqual(_owner.Address, ownerDetails.Address);
@@ -32,40 +30,48 @@ namespace PetClinic.Tests.FindOwners
             Assert.AreEqual(_owner.Telephone, ownerDetails.Telephone);
         }
 
-        [Test, Order(2)]
-        public void ASearchOwnerTest()
+        [Test]
+        public void SearchOwnerTest()
         {
-            var ownerDetails = new FindOwnerPage(Driver)
-                .Open()
+            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
+
+            var ownerInfromationPage = AddOwner(_owner)
+                .GoToFindOwnerPage()
                 .SearchForOwner<OwnerInformationPage>(_owner.LastName, driver => new OwnerInformationPage(driver));
 
-            Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerDetails.Name);
-            Assert.AreEqual(_owner.Address, ownerDetails.Address);
-            Assert.AreEqual(_owner.City, ownerDetails.City);
-            Assert.AreEqual(_owner.Telephone, ownerDetails.Telephone);
+            Assert.AreEqual($"{_owner.FirstName} {_owner.LastName}", ownerInfromationPage.Name);
+            Assert.AreEqual(_owner.Address, ownerInfromationPage.Address);
+            Assert.AreEqual(_owner.City, ownerInfromationPage.City);
+            Assert.AreEqual(_owner.Telephone, ownerInfromationPage.Telephone);
         }
 
-        [Test, Order(3)]
+        [Test]
         public void SearchForDublicatesTest()
         {
+            this._owner.LastName = Guid.NewGuid().ToString().Substring(0, 8);
             var expectedOwners = new List<Owner>();
-
-            var ownerDetails = new FindOwnerPage(Driver).Open();
+            var ownerInfromationPage = new OwnerInformationPage(Driver);
 
             for (var i = 0; i < 2; i++)
             {
-                _owner.FirstName += i;
-
-                ownerDetails
-                    .ClickAddOwnerButton()
-                    .EnterOwnerDetails(_owner)
-                    .ClickAddOwnerButton()
-                    .GoToFindOwnerPage();
-
+                ownerInfromationPage = AddOwner(this._owner);
                 expectedOwners.Add(_owner);
             }
 
-            var actualOwners = ownerDetails.SearchForOwner<OwnersPage>(_owner.LastName, driver => new OwnersPage(driver)).Owners;
+           var actualOwners = ownerInfromationPage
+                .GoToFindOwnerPage()
+                .SearchForOwner<OwnersPage>(_owner.LastName, driver => new OwnersPage(driver))
+                .Owners;
+
+            expectedOwners.ShouldBeEquivalentTo(actualOwners);
+        }
+
+        private OwnerInformationPage AddOwner(Owner owner)
+        {
+            return new FindOwnerPage(Driver)
+                .Open()
+                .ClickAddOwnerButton()
+                .EnterOwnerDetails(_owner);
         }
     }
 }

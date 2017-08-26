@@ -1,4 +1,6 @@
-﻿namespace PetClinic.Entities
+﻿using NUnit.Framework;
+
+namespace PetClinic.Entities
 {
     public class Owner
     {
@@ -8,6 +10,6 @@
         public string City { get; set; }
         public string Telephone { get; set; }
         public string Pets { get; set; }
-        public string Name { get; set; }
+        public string Name => $"{FirstName} {LastName}";
     }
 }

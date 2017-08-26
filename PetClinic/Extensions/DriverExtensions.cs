@@ -10,7 +10,7 @@ namespace PetClinic.Extensions
 {
     public static class DriverExtensions
     {
-        private const double Wait = 30;
+        private const double Wait = 5;
 
         public static bool IsElementDisplayed(this IWebDriver driver, ElementLocator locator)
         {
